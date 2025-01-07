@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Price Prediction</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7fc;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        background-color: white;
+        padding: 30px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        width: 400px;
+        text-align: center;
+      }
+
+      h1 {
+        color: #2c3e50;
+        margin-bottom: 30px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      label {
+        font-weight: bold;
+        color: #34495e;
+      }
+
+      input,
+      select {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px;
+        background-color: #3498db;
+        border: none;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      h3#result {
+        margin-top: 30px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #27ae60;
+        text-align: center;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #7f8c8d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>House Price Prediction</h1>
+
+      <form id="predict-form">
+        <label for="location">Location:</label>
+        <select id="location" name="location">
+          {% for loc in location %}
+          <option value="{{ loc }}">{{ loc }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="bhk">BHK:</label>
+        <input type="number" id="bhk" name="bhk" required />
+
+        <label for="bath">Bathrooms:</label>
+        <input type="number" id="bath" name="bath" required />
+
+        <label for="sqft">Square Feet:</label>
+        <input type="number" id="sqft" name="sqft" required />
+
+        <button type="submit">Predict Price</button>
+      </form>
+
+      <h3 id="result"></h3>
+
+      <div class="footer">
+        <p>Powered by HousePrice Prediction</p>
+      </div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#predict-form").on("submit", function (e) {
+          e.preventDefault();
+
+          $.ajax({
+            url: "/predict",
+            type: "POST",
+            data: $(this).serialize(),
+            success: function (response) {
+              $("#result").text(response);
+            },
+            error: function (error) {
+              $("#result").text("Error: " + error.responseText);
+            },
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
